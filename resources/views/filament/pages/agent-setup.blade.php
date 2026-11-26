@@ -41,7 +41,7 @@
                     @error('competitors') <p class="cs-error" role="alert">{{ $message }}</p> @enderror
                 </div>
             </section>
-            <footer class="cs-savebar"><p>Speichern aktiviert noch keinen Agenten oder Zeitplan. Die automatische Briefing-Übergabe folgt separat. Bitte keine Passwörter oder Tokens eintragen.</p><button class="cs-button cs-button-primary" type="submit" wire:loading.attr="disabled"><span wire:loading.remove wire:target="save">Setup speichern</span><span wire:loading wire:target="save">Wird gespeichert …</span></button></footer>
+            <footer class="cs-savebar"><p>Speichern aktiviert noch keinen Agenten oder Zeitplan. Aktiviere die Verbindung unter „Langdock Verbindung“. Neue Aufträge verwenden das gespeicherte Briefing. Bitte keine Passwörter oder Tokens eintragen.</p><button class="cs-button cs-button-primary" type="submit" wire:loading.attr="disabled"><span wire:loading.remove wire:target="save">Setup speichern</span><span wire:loading wire:target="save">Wird gespeichert …</span></button></footer>
         </form>
     </div>
 </x-filament-panels::page>

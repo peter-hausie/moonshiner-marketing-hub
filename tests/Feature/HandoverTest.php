@@ -22,7 +22,7 @@ class HandoverTest extends TestCase
         $this->actingAs(User::factory()->create(['role' => UserRole::Curator]));
         Filament::setCurrentPanel(Filament::getPanel('admin'));
         Livewire::test(TechnicalHandover::class)->assertSee('Moonshiner Marketing Hub')
-            ->assertSee('Langdock')->assertSee('noch zu implementieren');
+            ->assertSee('Langdock')->assertSee('standardmäßig deaktiviert');
     }
 
     public function test_first_admin_is_created_with_explicit_privileges_and_hashed_password(): void

@@ -1,8 +1,8 @@
 <x-filament-panels::page>
     <link rel="stylesheet" href="{{ asset('css/editorial-workspace.css') }}?v=20261123">
-    <div class="ew">
+    <div class="ew" wire:poll.10s>
         <header class="ew-hero"><div><span class="ew-eyebrow">Textwerkstatt · {{ $writer?->display_name ?: 'Text-Agent' }}</span><h2>Gute Texte entstehen im Dialog.</h2><p>{{ $piece->title }}</p></div><span class="ew-hero-icon"><x-heroicon-o-chat-bubble-left-right aria-hidden="true" /></span></header>
-        <div class="ew-notice" role="status"><strong>Agent noch nicht angebunden</strong><span>Briefings und Feedback werden gespeichert, aber nicht versendet. Es entstehen noch keine Agentenantworten oder automatischen Textänderungen.</span></div>
+        <div class="ew-notice" role="status"><strong>{{ $connected ? 'Connector aktiviert' : 'Agent noch nicht angebunden' }}</strong><span>{{ $connected ? 'Neue Aufträge werden im Hintergrund verarbeitet. Ergebnisse bleiben Vorschläge, bis du sie übernimmst.' : 'Nachrichten werden vorgemerkt und nicht versendet. Administratoren konfigurieren Langdock unter Langdock Verbindung.' }}</span></div>
         <div class="ew-layout">
             <div class="ew-stack">
                 <section class="ew-panel"><h3>Was soll am Text passieren?</h3>
@@ -19,7 +19,14 @@
                 </section>
                 <section class="ew-panel"><span class="ew-eyebrow">Briefings &amp; Feedback</span><h3>Der Verlauf zu diesem Beitrag</h3>
                     @forelse($messages as $entry)
-                        <article class="ew-message" wire:key="agent-message-{{ $entry->id }}"><div class="ew-meta"><strong>{{ $entry->kind === 'draft' ? 'Ausformulierung' : 'Feedback' }}</strong><time>{{ $entry->created_at->timezone('Europe/Vienna')->format('d.m.Y · H:i') }}</time></div><p class="ew-prose">{{ $entry->message }}</p><span class="ew-badge">Vorgemerkt · nicht gesendet</span><details><summary>Gespeicherten Arbeitsstand ansehen</summary><p><strong>{{ $entry->context_snapshot['title'] }}</strong></p><p class="ew-prose">{{ $entry->context_snapshot['body'] }}</p><h4>Tone of Voice</h4><p class="ew-prose">{{ $entry->context_snapshot['tone_of_voice'] ?: 'Noch kein Markenbriefing hinterlegt.' }}</p></details></article>
+                        <article class="ew-message" wire:key="agent-message-{{ $entry->id }}"><div class="ew-meta"><strong>{{ $entry->kind === 'draft' ? 'Ausformulierung' : 'Feedback' }}</strong><time>{{ $entry->created_at->timezone('Europe/Vienna')->format('d.m.Y · H:i') }}</time></div><p class="ew-prose">{{ $entry->message }}</p>@php($run = $runs->get($entry->id))
+                            <span class="ew-badge">{{ $run?->label() ?? 'Vorgemerkt · nicht gesendet' }}</span>
+                            @if($run?->error_code)<p role="alert">{{ $run->error_code }}. Bei Konflikten aktuellen Beitrag prüfen und neuen Auftrag erstellen.</p>@endif
+                            @if($run?->status === 'failed' && $run->attempt < 3)<button class="ew-button" wire:click="retryRun({{ $run->id }})" wire:loading.attr="disabled">Erneut versuchen (API Aufruf)</button>@endif
+                            @if($run?->result_version_id && ($proposal = $proposals->get($run->result_version_id)))
+                                <section><h4>Agentenvorschlag: {{ $proposal->title }}</h4><p class="ew-prose">{{ $proposal->body }}</p>
+                                @if($run->status === 'succeeded')<button class="ew-button" wire:click="adoptRun({{ $run->id }})" wire:confirm="Vorschlag als neuen Entwurf übernehmen? Dies ist keine Veröffentlichung." wire:loading.attr="disabled">Vorschlag übernehmen</button>@endif</section>
+                            @endif<details><summary>Gespeicherten Arbeitsstand ansehen</summary><p><strong>{{ $entry->context_snapshot['title'] }}</strong></p><p class="ew-prose">{{ $entry->context_snapshot['body'] }}</p><h4>Tone of Voice</h4><p class="ew-prose">{{ $entry->context_snapshot['tone_of_voice'] ?: 'Noch kein Markenbriefing hinterlegt.' }}</p></details></article>
                     @empty<div class="ew-empty"><x-heroicon-o-chat-bubble-left-ellipsis aria-hidden="true" /><h4>Hier beginnt die Zusammenarbeit.</h4><p>Formuliere den ersten Auftrag. Spätere Änderungswünsche bleiben im selben Beitragsverlauf.</p></div>@endforelse
                     {{ $messages->links() }}
                 </section>

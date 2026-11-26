@@ -30,7 +30,7 @@ php artisan serve
 
 ## Liefergrenze
 
-Redaktion, Kalender, Rechte, Einladungen, Versionen, Feedback und API Annahme sind implementiert. **Ein Anbieterconnector, automatische Auftragsabholung und die Übermittlung der gespeicherten Briefings an externe Agenten sind noch zu implementieren.** Es werden keine externen Agenten mitinstalliert. Keine Behauptung einer fertigen Langdock Integration.
+Redaktion, Kalender, Rechte, Einladungen, Versionen und Feedback sind implementiert. Der Langdock Connector verarbeitet neue Textaufträge und manuell ausgelöste Recherche. Backendkonfiguration unter **Langdock Verbindung**: API Schlüssel, Agenten IDs, Aktivierung und Verbindungstest. Scheduler und Queue Worker müssen auf dem Host laufen; siehe [Einrichtung](docs/AGENTS-INTEGRATION.md). Kein echter Anbieterzugang ist enthalten oder aktiviert.
 
 ```sh
 php artisan test

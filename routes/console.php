@@ -62,3 +62,5 @@ Artisan::command('publications:dispatch', function (): void {
 })->purpose('Dispatch all due channel publications');
 
 Schedule::command('publications:dispatch')->everyMinute()->withoutOverlapping();
+
+Schedule::command('agents:dispatch')->everyMinute()->withoutOverlapping();

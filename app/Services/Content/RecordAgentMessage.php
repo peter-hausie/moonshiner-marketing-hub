@@ -6,11 +6,12 @@ use App\Models\AgentEditorialSetting;
 use App\Models\ContentAgentMessage;
 use App\Models\ContentItem;
 use App\Models\User;
+use App\Services\Connector\Connector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-/** Persist an auditable human request and its context. This is not a provider dispatch.
- * A future connector must explicitly claim the record and bind a fresh server context. */
+/** Persist the human request and immutable context in one transaction.
+ * When configured, enqueue work locally; provider network calls happen only in the worker. */
 final class RecordAgentMessage
 {
     public function record(int $id, User $user, string $kind, string $message, string $key): ContentAgentMessage
@@ -41,7 +42,9 @@ final class RecordAgentMessage
                 ],
             ])->save();
 
-            // Deliberately no dispatch: connector and explicit delivery are a later step.
+            // Existing disconnected records stay dormant; only this new request is eligible.
+            app(Connector::class)->enqueue($entry, $user);
+
             return $entry;
         });
     }

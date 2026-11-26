@@ -31,6 +31,17 @@ final class AgentSetupOverview
             $api = config('agents.'.$flag) === true;
             $lastSuccess = $agent && Schema::hasTable('agent_jobs')
                 ? DB::table('agent_jobs')->where('agent_principal_id', $agent->id)->where('status', 'succeeded')->max('updated_at') : null;
+            // Internal provider connector does not need the optional public bearer APIs.
+            $connector = Schema::hasTable('provider_connections')
+                ? DB::table('provider_connections')->where('id', 1)->select('enabled', 'revision', 'writer_agent_id', 'research_agent_id')
+                    ->selectRaw('api_key IS NOT NULL AS has_key')->first() : null;
+            if ($connector) {
+                $credential = (bool) $connector->has_key && (bool) ($identity === 'journalist' ? $connector->research_agent_id : $connector->writer_agent_id);
+                $api = (bool) $connector->enabled;
+                $lastSuccess = Schema::hasTable('connector_runs') ? DB::table('connector_runs')
+                    ->where('kind', $identity === 'journalist' ? 'research' : 'draft')
+                    ->where('connection_revision', $connector->revision)->whereIn('status', ['succeeded', 'adopted'])->max('updated_at') : null;
+            }
             $editorial = Schema::hasTable('agent_editorial_settings')
                 ? AgentEditorialSetting::find($identity === 'journalist' ? 'research' : 'writer') : null;
             $briefed = $editorial && trim($editorial->briefing ?? '') !== '';
@@ -40,8 +51,8 @@ final class AgentSetupOverview
                 ['ok' => (bool) $monitoring, 'text' => 'Mitbewerber hinterlegen oder Monitoring bewusst abwählen'],
                 ['ok' => $schemaReady, 'text' => 'Agenten-Datenmodell bereitstellen'],
                 ['ok' => (bool) $agent?->enabled, 'text' => 'Eigenen Agentenzugang für diese Installation einrichten und aktivieren'],
-                ['ok' => $credential, 'text' => 'Gültigen, auf diese Rolle begrenzten Zugang geschützt hinterlegen und erneuern'],
-                ['ok' => $api, 'text' => 'Passende Hub-Schnittstelle kontrolliert aktivieren'],
+                ['ok' => $credential, 'text' => $connector ? 'Langdock Schlüssel und passende Agenten ID im Backend hinterlegen' : 'Gültigen, auf diese Rolle begrenzten Zugang geschützt hinterlegen und erneuern'],
+                ['ok' => $api, 'text' => $connector ? 'Langdock Connector im Backend aktivieren' : 'Passende Hub-Schnittstelle kontrolliert aktivieren'],
                 ['ok' => (bool) $lastSuccess, 'text' => 'Testauftrag vollständig ausführen und Ergebnis im Hub prüfen'],
             ];
             if ($identity !== 'journalist') {

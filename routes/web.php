@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BlogExecutionMediaController;
+use App\Http\Controllers\ConnectorSettingsController;
+use App\Http\Middleware\EnsureActiveHubUser;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,3 +15,6 @@ Route::get('/internal/blog-media/{attempt}/{digest}', BlogExecutionMediaControll
     ->name('blog.execution-media');
 
 require __DIR__.'/accounts.php';
+
+Route::post('/admin/connector-settings', ConnectorSettingsController::class)
+    ->middleware(['auth', EnsureActiveHubUser::class])->name('connector.settings');

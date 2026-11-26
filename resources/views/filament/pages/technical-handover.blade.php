@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <p>Einrichtung, Architektur und nächste Entwicklungsschritte. Agentenconnector noch nicht aktiviert.</p>
+    <p>Einrichtung, Architektur und nächste Entwicklungsschritte. Langdock Connector im Backend konfigurieren; standardmäßig deaktiviert.</p>
     @foreach ($this->documents() as $name => $html)
         <x-filament::section :heading="$name" collapsible :collapsed="$name !== 'HANDOVER'">
             <div class="handover-document">{!! $html !!}</div>

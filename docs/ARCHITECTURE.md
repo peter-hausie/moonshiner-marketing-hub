@@ -24,4 +24,8 @@ Ein Request kann wiederholt werden. Ein Ergebnis kann verspätet kommen. Ein Men
 
 ## Kommentierungsprinzip
 
-Kommentare erklären Absicht, Transaktionsgrenzen und Fehlerfälle, nicht jede selbsterklärende Zuweisung. Besonders beachten: RecordAgentMessage (kein Dispatch), DraftContext (Serverhash), AgentJobLifecycle (Versuchsnummer), AcceptDraftSubmission (Vorschlag statt Überschreiben), PublishPublication (Queue ist keine Freigabe).
+Kommentare erklären Absicht, Transaktionsgrenzen und Fehlerfälle, nicht jede selbsterklärende Zuweisung. Besonders beachten: RecordAgentMessage (persistente Einreihung nur bei aktivem Connector), DraftContext (Serverhash), AgentJobLifecycle (Versuchsnummer), AcceptDraftSubmission (Vorschlag statt Überschreiben), PublishPublication (Queue ist keine Freigabe).
+
+## Providerconnector
+
+`Services/Connector` enthält ContentProvider (Schnittstelle), LangdockProvider (HTTP Vertrag), SaveConnection (Admin und verschlüsselter Schlüssel) und Connector (Lease, Konfliktprüfung, Annahme, Übernahme). `connector_runs` ist die dauerhafte Warteschlange. `agents:dispatch` legt Queue Jobs mit reiner Run ID an. Keine Provider Credentials in Jobdaten. Netzwerk I/O liegt außerhalb offener Transaktionen. Nur Hostcode darf AcceptDraftSubmission/AcceptResearchSubmission mit festen Scopes aufrufen. Recherche erzeugt zunächst Themenvorschläge, keine Beiträge.

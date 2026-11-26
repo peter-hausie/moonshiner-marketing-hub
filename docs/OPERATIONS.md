@@ -14,7 +14,7 @@ Nach Backup: `composer install --no-dev --optimize-autoloader`, Frontendbuild er
 
 ## Hintergrundarbeit
 
-Für freigegebene Veröffentlichungen: ein überwachter Laravel Queue Worker und `php artisan schedule:run` jede Minute. Vor Aktivierung Publisher in einer isolierten Umgebung prüfen. In `staging` ist Publishing unterdrückt. Der Scheduler startet KEINEN externen Schreibagenten; dafür ist der Connector aus AGENTS-INTEGRATION erforderlich.
+Für freigegebene Veröffentlichungen: ein überwachter Laravel Queue Worker und `php artisan schedule:run` jede Minute. Vor Aktivierung Publisher in einer isolierten Umgebung prüfen. In `staging` ist Publishing unterdrückt. Der Scheduler ruft auch agents:dispatch auf. Der Langdock Connector arbeitet nur bei Backendaktivierung. Queue Worker mit --timeout=120 und --tries=1 betreiben; retry_after mindestens 180. API Schlüssel und Agenten IDs werden im Backend eingerichtet.
 
 ## Kanäle
 

@@ -2,16 +2,16 @@
 
 ## Ausgangspunkt
 
-Dies ist ein Laravel/Filament Marketing Hub, kein Lernsystem. Lies README, ARCHITECTURE und AGENTS-INTEGRATION vor Änderungen. Die komplette Originalproduktion ist bewusst nicht enthalten. Keine Annahmen über vorhandene Konten, Domains oder Secrets treffen.
+Dies ist ein Laravel/Filament Marketing Hub, kein Lernsystem. Lies README, ARCHITECTURE und AGENTS-INTEGRATION vor Änderungen. Die komplette Originalproduktion ist bewusst nicht enthalten. Keine Annahmen über vorhandene Konten, Domains oder Secrets treffen. Der eingebaute Langdock Connector ist implementiert; nicht nochmals bauen.
 
 ## Reihenfolge
 
 1. Frischen Klon installieren, Migrationen und Tests ausführen. Admin interaktiv erstellen. Login, Kalender, Themen und Agenten Setup öffnen.
 2. Moonshiner bestätigt Zweck, Zielgruppen, Tonalität, Kanäle und Recherchequellen; diese in Agenten Setup pflegen, nicht im Systemprompt hart verdrahten.
-3. Einen Anbieter auswählen, aktuelle API Dokumentation prüfen. Langdock ist eine Option, keine bestehende Integration. Pro Rolle getrennte Konfiguration und minimale Rechte.
-4. Connector gemäß AGENTS-INTEGRATION implementieren. Auftragsabholung, Lease/Timeout, Idempotenz, Konfliktstatus und sichtbare Fehler gehören zum selben vertikalen Ablauf.
-5. Prüfe die Speicherung und Übernahme von Vorschlagsversionen in der UI. Ein erfolgreiches API Resultat allein ist noch kein für die Redaktion benutzbarer Workflow.
-6. Automatische Recherche erst nach funktionierender manueller Auslösung ergänzen. Frequenz, Quellenlimits, Kostenlimit und Abschaltmöglichkeit festlegen. Kein stiller Dauerlauf.
+3. Langdock Agenten bereitstellen, Schlüssel und Agenten IDs in Langdock Verbindung konfigurieren. Tonalität und Recherchebriefing im Agenten Setup pflegen.
+4. Scheduler und Queue Worker überwachen. Synthetischen Verbindungstest und vollständigen Textauftrag durchspielen.
+5. Vorschlag im Beitragsverlauf prüfen und übernehmen. Menschliche Freigabe und Publication bleiben getrennt. Paralleländerungen, Rechteentzug und Wiederholungen testen.
+6. Recherche manuell auslösen und Quellen kontrollieren. Eine periodische Recherche ist nicht eingerichtet. Eine spätere Automatik braucht explizite Frequenz, Kostenlimit und Abschaltmöglichkeit.
 7. Erst danach Kanalpublisher anschließen. Ein Kalendertermin oder Agentenergebnis darf keine Freigabe ersetzen.
 8. Stage mit eigenen Daten und Testzielen abnehmen, Backuprestore prüfen, dann Produktionsdeployment.
 

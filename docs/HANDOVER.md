@@ -16,7 +16,7 @@ Eine Redaktion soll aus belegten Themenideen nachvollziehbare Beiträge machen. 
 
 ## Was funktioniert und was noch fehlt
 
-Die redaktionelle Oberfläche und gespeicherte Briefings sind vorhanden. Feedback ist derzeit `awaiting_connection`: es wird dauerhaft mit Kontext gespeichert, aber nicht automatisch an einen Anbieter gesendet. Die Agenten API kann registrierte Versuche annehmen; sie erstellt keine Jobs auf Zuruf eines Modells. Der vertrauenswürdige Connector zwischen Oberfläche, Jobverwaltung und Anbieter fehlt noch. Das ist der erste Entwicklungsauftrag nach der Installation.
+Der Langdock Connector ist implementiert und standardmäßig deaktiviert. Neue Textaufträge werden nach Aktivierung eingereiht; Recherche kann manuell gestartet werden. Die Oberfläche zeigt Status, Fehler und Vorschläge. Eine bewusste Übernahme erzeugt einen Entwurf, keine Veröffentlichung. Alte vorgemerkte Nachrichten bleiben unverarbeitet. Einmalig Hostworker und Scheduler einrichten; danach Anbieter und IDs im Backend konfigurieren. Die öffentlichen Agenten APIs bleiben für diesen internen Connector deaktiviert.
 
 ## Dokumentation im Repository
 

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Notifications\ResetPassword;
+use App\Services\Connector\ContentProvider;
+use App\Services\Connector\LangdockProvider;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(ContentProvider::class, LangdockProvider::class);
         $this->app->bind(\Filament\Auth\Notifications\ResetPassword::class, ResetPassword::class);
     }
 
